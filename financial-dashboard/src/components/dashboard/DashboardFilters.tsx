@@ -3,17 +3,22 @@ import { useTransactions } from "../../context/useTransactions";
 import { useFilters } from "../../context/useFilters";
 import { Card } from "../ui/Card";
 import { cn } from "../../utils/cn";
+import {
+  epochToDateInputValue,
+  dateInputValueToEpochStart,
+  dateInputValueToEpochEnd,
+} from "../../utils/dateRange";
 
 /**
- * Esse componente precisa ser responsivo:
- * - No mobile: empilha os selects em uma coluna
- * - No desktop: exibe linha horizontal
+ * Responsividade:
+ * - mobile: empilha os filtros em colunas (w-full)
+ * - desktop: coloca lado a lado e permite wrap
  */
 export default function DashboardFilters() {
   const { transactions } = useTransactions();
   const { filters, setFilters } = useFilters();
 
-  // pegar valores únicos para os dropdowns
+  // Combos dinâmicos baseados nas transações disponíveis
   const uniqueAccounts = useMemo(() => {
     return Array.from(new Set(transactions.map((t) => t.account))).sort();
   }, [transactions]);
@@ -26,14 +31,31 @@ export default function DashboardFilters() {
     return Array.from(new Set(transactions.map((t) => t.state))).sort();
   }, [transactions]);
 
-  function handleSelectChange(key: "account" | "industry" | "state", value: string) {
+  function handleSelectChange(
+    key: "account" | "industry" | "state",
+    value: string
+  ) {
     setFilters((prev) => ({
       ...prev,
       [key]: value === "" ? null : value,
     }));
   }
 
-  // date range vai entrar depois com popover, por enquanto placeholder
+  function handleDateStartChange(value: string) {
+    const epoch = dateInputValueToEpochStart(value);
+    setFilters((prev) => ({
+      ...prev,
+      dateStart: epoch,
+    }));
+  }
+
+  function handleDateEndChange(value: string) {
+    const epoch = dateInputValueToEpochEnd(value);
+    setFilters((prev) => ({
+      ...prev,
+      dateEnd: epoch,
+    }));
+  }
 
   return (
     <Card
@@ -100,15 +122,30 @@ export default function DashboardFilters() {
         </select>
       </div>
 
-      {/* Data (placeholder visual por enquanto) */}
-      <div className="w-full md:w-auto flex-1 min-w-[140px] opacity-60 pointer-events-none">
+      {/* Date Start */}
+      <div className="w-full md:w-auto flex-1 min-w-[140px]">
         <label className="block text-[12px] text-white/60 mb-1 font-medium">
-          Período
+          Início
         </label>
-        <div className="w-full bg-[#0f172a]/40 border border-white/10 text-white text-[14px] rounded-xl px-3 py-2 flex items-center justify-between">
-          <span className="text-white/40 text-[13px]">Selecionar datas</span>
-          <span className="text-white/30 text-[12px]">em breve</span>
-        </div>
+        <input
+          type="date"
+          className="w-full bg-[#0f172a]/60 border border-white/10 text-white text-[14px] rounded-xl px-3 py-2 outline-none focus:border-accent focus:ring-2 focus:ring-accent/40 [color-scheme:dark]"
+          value={epochToDateInputValue(filters.dateStart)}
+          onChange={(e) => handleDateStartChange(e.target.value)}
+        />
+      </div>
+
+      {/* Date End */}
+      <div className="w-full md:w-auto flex-1 min-w-[140px]">
+        <label className="block text-[12px] text-white/60 mb-1 font-medium">
+          Fim
+        </label>
+        <input
+          type="date"
+          className="w-full bg-[#0f172a]/60 border border-white/10 text-white text-[14px] rounded-xl px-3 py-2 outline-none focus:border-accent focus:ring-2 focus:ring-accent/40 [color-scheme:dark]"
+          value={epochToDateInputValue(filters.dateEnd)}
+          onChange={(e) => handleDateEndChange(e.target.value)}
+        />
       </div>
     </Card>
   );
