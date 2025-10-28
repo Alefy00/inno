@@ -1,16 +1,12 @@
 import { useState } from "react";
-import { useAuth } from "../../context/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Home, LogOut } from "lucide-react";
-import { ConfirmLogoutModal } from "./ConfirmLogoutModal";
-
+import { useLogoutModal } from "../../context/LogoutModalContext";
 
 export default function MobileHeader() {
   const [openMenu, setOpenMenu] = useState(false);
-  const [confirmLogout, setConfirmLogout] = useState(false);
-
-  const { logout } = useAuth();
   const navigate = useNavigate();
+  const { askLogout } = useLogoutModal();
 
   function handleToggleMenu() {
     setOpenMenu((prev) => !prev);
@@ -21,19 +17,9 @@ export default function MobileHeader() {
     setOpenMenu(false);
   }
 
-  function askLogout() {
-    setConfirmLogout(true);
-  }
-
-  function cancelLogout() {
-    setConfirmLogout(false);
-  }
-
-  function confirmLogoutAndExit() {
-    logout();
-    setConfirmLogout(false);
+  function handleAskLogout() {
     setOpenMenu(false);
-    navigate("/login");
+    askLogout(); // dispara o modal global
   }
 
   return (
@@ -42,7 +28,7 @@ export default function MobileHeader() {
       <header className="flex items-center justify-between bg-transparent px-4 py-4">
         <div className="flex flex-col">
           <span className="text-[13px] text-white/50 leading-tight">
-            Olá, Innodev
+            Olá, Alefy 👋
           </span>
           <span className="text-base font-semibold text-white leading-tight">
             Seu painel financeiro
@@ -57,7 +43,7 @@ export default function MobileHeader() {
         </button>
       </header>
 
-      {/* Dropdown animado (Home / Sair) */}
+      {/* Dropdown animado */}
       <div
         className={[
           "px-4 pb-4 transition-all duration-200 ease-out origin-top",
@@ -79,9 +65,9 @@ export default function MobileHeader() {
           {/* Divider */}
           <div className="h-px bg-white/10" />
 
-          {/* Logout -> abre confirmação */}
+          {/* Logout */}
           <button
-            onClick={askLogout}
+            onClick={handleAskLogout}
             className="flex items-center gap-2 w-full text-left px-4 py-3 text-sm font-medium text-white/90 hover:bg-white/10 transition"
           >
             <LogOut size={16} className="text-white/80" />
@@ -89,13 +75,6 @@ export default function MobileHeader() {
           </button>
         </div>
       </div>
-
-      {/* modal global */}
-      <ConfirmLogoutModal
-        open={confirmLogout}
-        onCancel={cancelLogout}
-        onConfirm={confirmLogoutAndExit}
-      />
     </div>
   );
 }
