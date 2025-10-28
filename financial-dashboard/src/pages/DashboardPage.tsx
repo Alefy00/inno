@@ -1,5 +1,7 @@
 import Sidebar from "../components/layout/Sidebar";
 import Header from "../components/layout/Header";
+import MobileHeader from "../components/layout/MobileHeader";
+
 import { Card } from "../components/ui/Card";
 
 import { useTransactions } from "../context/useTransactions";
@@ -29,7 +31,12 @@ export default function DashboardPage() {
 
       {/* Conteúdo principal */}
       <main className="flex-1 md:ml-64 min-h-screen bg-[#0f172a] text-white flex flex-col">
+
+        {/* Header desktop */}
         <Header />
+
+        {/* Header mobile com menu dropdown */}
+        <MobileHeader />
 
         <section className="p-6 md:p-10 space-y-8 flex-1">
           {/* Filtros globais */}
@@ -75,9 +82,8 @@ export default function DashboardPage() {
             <BalanceLineChartCard dataSource={filtered} />
           </div>
 
-          {/* Tabela placeholder */}
+          {/* Tabela paginada de transações filtradas */}
           <TransactionsTable dataSource={filtered} pageSize={15} />
-
         </section>
       </main>
     </div>
