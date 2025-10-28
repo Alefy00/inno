@@ -8,15 +8,17 @@ import { filterTransactions } from "../utils/filterTransactions";
 import { getTotals, formatCurrencyBRL } from "../utils/metrics";
 
 import DashboardFilters from "../components/dashboard/DashboardFilters";
+import StackedBarChartCard from "../components/charts/StackedBarChartCard";
+import BalanceLineChartCard from "../components/charts/BalanceLineChartCard";
 
 export default function DashboardPage() {
   const { transactions } = useTransactions();
   const { filters } = useFilters();
 
-  // aplica filtros globais
+  // aplica filtros
   const filtered = filterTransactions(transactions, filters);
 
-  // calcula totais apenas com base nas transações filtradas
+  // totais dos cards com base no filtro
   const { income, expense, balance, pendingCount } = getTotals(filtered);
 
   return (
@@ -32,7 +34,7 @@ export default function DashboardPage() {
           {/* Filtros globais */}
           <DashboardFilters />
 
-          {/* Cards resumo (dinâmicos e responsivos) */}
+          {/* Cards resumo */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="p-5">
               <h2 className="text-sm text-white/60">Receitas</h2>
@@ -66,19 +68,10 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          {/* Gráficos placeholder (responsivo) */}
+          {/* Gráficos dinâmicos e responsivos */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="h-64 flex items-center justify-center text-white/50 text-sm text-center">
-              [ Gráfico de barras empilhadas ]
-              <br />
-              (deposit vs withdraw ao longo do tempo, após filtros)
-            </Card>
-
-            <Card className="h-64 flex items-center justify-center text-white/50 text-sm text-center">
-              [ Gráfico de linha ]
-              <br />
-              (saldo acumulado ao longo do tempo, após filtros)
-            </Card>
+            <StackedBarChartCard dataSource={filtered} />
+            <BalanceLineChartCard dataSource={filtered} />
           </div>
 
           {/* Tabela placeholder */}
