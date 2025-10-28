@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAuth } from "../../context/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Home, LogOut } from "lucide-react";
+import { ConfirmLogoutModal } from "./ConfirmLogoutModal";
+
 
 export default function MobileHeader() {
   const [openMenu, setOpenMenu] = useState(false);
@@ -15,7 +17,7 @@ export default function MobileHeader() {
   }
 
   function goHome() {
-    navigate("/dashboard"); // navegação interna SPA
+    navigate("/dashboard");
     setOpenMenu(false);
   }
 
@@ -28,7 +30,7 @@ export default function MobileHeader() {
   }
 
   function confirmLogoutAndExit() {
-    logout(); // limpa sessão do contexto + localStorage
+    logout();
     setConfirmLogout(false);
     setOpenMenu(false);
     navigate("/login");
@@ -40,7 +42,7 @@ export default function MobileHeader() {
       <header className="flex items-center justify-between bg-transparent px-4 py-4">
         <div className="flex flex-col">
           <span className="text-[13px] text-white/50 leading-tight">
-            Olá, Alefy 👋
+            Olá, Innodev
           </span>
           <span className="text-base font-semibold text-white leading-tight">
             Seu painel financeiro
@@ -77,7 +79,7 @@ export default function MobileHeader() {
           {/* Divider */}
           <div className="h-px bg-white/10" />
 
-          {/* Logout -> abre modal de confirmação */}
+          {/* Logout -> abre confirmação */}
           <button
             onClick={askLogout}
             className="flex items-center gap-2 w-full text-left px-4 py-3 text-sm font-medium text-white/90 hover:bg-white/10 transition"
@@ -88,35 +90,12 @@ export default function MobileHeader() {
         </div>
       </div>
 
-      {/* Modal de confirmação de logout */}
-      {confirmLogout && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4 py-10 bg-black/60 backdrop-blur-sm">
-            <div className="w-full max-w-[320px] rounded-xl bg-[#1a1f2e] border border-white/10 text-white shadow-2xl shadow-black/70 p-5">
-              <div className="text-base font-semibold text-white mb-2">
-                Deseja realmente sair?
-              </div>
-              <div className="text-[13px] text-white/60 mb-5 leading-relaxed">
-                Sua sessão será encerrada e você voltará para a tela de login.
-              </div>
-
-              <div className="flex items-center justify-end gap-3 text-[14px]">
-                <button
-                  onClick={cancelLogout}
-                  className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white/80 font-medium hover:bg-white/15 transition"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={confirmLogoutAndExit}
-                  className="px-3 py-2 rounded-lg bg-red-600/80 border border-red-400/20 text-white font-semibold hover:bg-red-600 transition"
-                >
-                  Sair
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
+      {/* modal global */}
+      <ConfirmLogoutModal
+        open={confirmLogout}
+        onCancel={cancelLogout}
+        onConfirm={confirmLogoutAndExit}
+      />
     </div>
   );
 }
