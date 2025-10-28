@@ -86,7 +86,7 @@ export default function LoginPage() {
 
         {/* Rodapé */}
         <div className="mt-6 text-center text-[11px] text-white/30">
-          <span className="font-medium text-white/50">fintrack</span> ©{" "}
+          <span className="font-medium text-white/50">Innodev</span> ©{" "}
           {new Date().getFullYear()}
         </div>
       </div>
