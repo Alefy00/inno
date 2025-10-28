@@ -10,6 +10,7 @@ import { getTotals, formatCurrencyBRL } from "../utils/metrics";
 import DashboardFilters from "../components/dashboard/DashboardFilters";
 import StackedBarChartCard from "../components/charts/StackedBarChartCard";
 import BalanceLineChartCard from "../components/charts/BalanceLineChartCard";
+import TransactionsTable from "../components/dashboard/TransactionsTable";
 
 export default function DashboardPage() {
   const { transactions } = useTransactions();
@@ -75,11 +76,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Tabela placeholder */}
-          <Card className="p-6 mt-6 overflow-x-auto">
-            <div className="text-white/50 text-center text-sm">
-              [ Tabela de transações filtráveis ]
-            </div>
-          </Card>
+          <TransactionsTable dataSource={filtered} pageSize={15} />
+
         </section>
       </main>
     </div>
