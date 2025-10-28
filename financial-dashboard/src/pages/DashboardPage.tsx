@@ -3,11 +3,21 @@ import Header from "../components/layout/Header";
 import { Card } from "../components/ui/Card";
 
 import { useTransactions } from "../context/useTransactions";
+import { useFilters } from "../context/useFilters";
+import { filterTransactions } from "../utils/filterTransactions";
 import { getTotals, formatCurrencyBRL } from "../utils/metrics";
+
+import DashboardFilters from "../components/dashboard/DashboardFilters";
 
 export default function DashboardPage() {
   const { transactions } = useTransactions();
-  const { income, expense, balance, pendingCount } = getTotals(transactions);
+  const { filters } = useFilters();
+
+  // aplica filtros globais
+  const filtered = filterTransactions(transactions, filters);
+
+  // calcula totais apenas com base nas transações filtradas
+  const { income, expense, balance, pendingCount } = getTotals(filtered);
 
   return (
     <div className="flex">
@@ -19,7 +29,10 @@ export default function DashboardPage() {
         <Header />
 
         <section className="p-6 md:p-10 space-y-8 flex-1">
-          {/* Cards resumo */}
+          {/* Filtros globais */}
+          <DashboardFilters />
+
+          {/* Cards resumo (dinâmicos e responsivos) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="p-5">
               <h2 className="text-sm text-white/60">Receitas</h2>
@@ -58,18 +71,18 @@ export default function DashboardPage() {
             <Card className="h-64 flex items-center justify-center text-white/50 text-sm text-center">
               [ Gráfico de barras empilhadas ]
               <br />
-              (deposit vs withdraw ao longo do tempo)
+              (deposit vs withdraw ao longo do tempo, após filtros)
             </Card>
 
             <Card className="h-64 flex items-center justify-center text-white/50 text-sm text-center">
               [ Gráfico de linha ]
               <br />
-              (saldo acumulado)
+              (saldo acumulado ao longo do tempo, após filtros)
             </Card>
           </div>
 
           {/* Tabela placeholder */}
-          <Card className="p-6 mt-6">
+          <Card className="p-6 mt-6 overflow-x-auto">
             <div className="text-white/50 text-center text-sm">
               [ Tabela de transações filtráveis ]
             </div>
