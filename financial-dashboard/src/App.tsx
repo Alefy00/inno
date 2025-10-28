@@ -1,9 +1,10 @@
-import LoginPage from "./pages/LoginPage";
+import AppRouter from "./routes/AppRouter";
+
 
 export default function App() {
   return (
     <div className="min-h-screen">
-      <LoginPage />
+      <AppRouter />
     </div>
   );
 }

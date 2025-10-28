@@ -1,4 +1,5 @@
 import type { FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 
 import { Card, CardHeader, CardContent, CardFooter } from "../components/ui/Card";
@@ -7,12 +8,18 @@ import { Input } from "../components/ui/Input";
 import { Button } from "../components/ui/Button";
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // Login simulado — apenas salva sessão no localStorage
-    login();
+    login(); // autentica o usuário (simulado)
+    navigate("/dashboard"); // redireciona após login
+  }
+
+  // se já estiver logado, redireciona automaticamente
+  if (isAuthenticated) {
+    navigate("/dashboard");
   }
 
   return (
